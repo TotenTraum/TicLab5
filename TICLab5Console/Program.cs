@@ -169,12 +169,15 @@ BigInteger CalcModule(BigInteger combin, BigInteger G)
 {
     var combinList = BigIntToList(combin);
     var gList = BigIntToList(G);
+    //Console.WriteLine("\n");
     while (combinList.Count >= gList.Count)
     {
         var bigInt = ListToBigIntCount(ref combinList, gList.Count);
         var list = DivLists(BigIntToList(bigInt), gList);
         combinList.AddRange(TrimList(list));
         TrimList(combinList);
+        //Console.WriteLine($"{ListToBigInt(combinList)}  {bigInt}");
+
     }
     return ListToBigInt(combinList);
 }
@@ -184,10 +187,15 @@ BigInteger CalcCreatedG(int n, int r)
 {
     var G = new BigInteger(Math.Pow(10, r) + 1);
     var del = new BigInteger(Math.Pow(10, n) + 1);
-    while (CountOne(G) < 3 && CalcModule(del, G) != 0)
+    var k = n - r;
+    var tmp = CalcModule(del, G);
+    while (CountOne(G) < 3 || CalcModule(del, G) != 0)
     {
         G += 10;
         FixBinaryInput(ref G);
+        if(BigIntToList(G).Count - 1 > r)
+            del = new BigInteger(Math.Pow(10, (++r) + k) + 1);
+        tmp = CalcModule(del, G);
     }
 
     return G;
@@ -272,13 +280,14 @@ string ConvertToString(List<int> list)
 }
 
 var num = new List<int>{0,0,1,1}; // or new BigInteger(1100)
-num = BigIntToList(new BigInteger(101010));
+num = BigIntToList(new BigInteger(101101111));
 Console.WriteLine(ConvertToString(num));
 Console.WriteLine(СreatePolynomialView(ListToBigInt(num)));
 var r = CalculateCodeDistance(CalculateDigitsCount(ListToBigInt(num)));
 var n = r + num.Count();
 var G = CalcCreatedG(n, r);
 var Combination = new List<int>(num);
+var tmp2 = CalculateDigitsCount(G);
 for(int i = 0; i < CalculateDigitsCount(G) - 1; i++)
     Combination.Insert(0,0);
 var list = num;
@@ -289,9 +298,9 @@ Console.WriteLine(ConvertToString(Combination));
 Console.WriteLine(module);
 Console.WriteLine(CodeCombin);
 
-Console.WriteLine(CalcModule(CodeCombin,G));
-var list2 = FixMsg(new BigInteger(1010100110), G, 1);
-if (list2 != null)
-    for(var i = list2.Count - 1; i >= 0; i--)
-        Console.Write(list2[i]);
-Console.WriteLine();
+// Console.WriteLine(CalcModule(CodeCombin,G));
+// var list2 = FixMsg(new BigInteger(1010100110), G, 1);
+// if (list2 != null)
+//     for(var i = list2.Count - 1; i >= 0; i--)
+//         Console.Write(list2[i]);
+// Console.WriteLine();

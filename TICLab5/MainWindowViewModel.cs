@@ -150,7 +150,7 @@ public class MainWindowViewModel : INotifyPropertyChanged
         var module = CrcUtils.CalcModule(Combination, BigInteger.Parse(_gPolynom));
         TestPolynomCombin = CrcUtils.ListToBigInt(CrcUtils.AddLists(CrcUtils.BigIntToList(Combination), CrcUtils.BigIntToList(module))).ToString();
         TestPolynom = CrcUtils.CreatePolynomialView(CrcUtils.ListToBigInt(CrcUtils.AddLists(CrcUtils.BigIntToList(Combination), CrcUtils.BigIntToList(module))));
-        _fixedCode = TestPolynomCombin;
+        FakeCode = TestPolynomCombin;
     }
 
     public void Start2_OnClick()

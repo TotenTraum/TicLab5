@@ -190,10 +190,13 @@ public static class CrcUtils
     {
         var G = new BigInteger(Math.Pow(10, r) + 1);
         var del = new BigInteger(Math.Pow(10, n) + 1);
-        while (CountOne(G) < 3 && CalcModule(del, G) != 0)
+        var k = n - r;
+        while (CountOne(G) < 3 || CalcModule(del, G) != 0)
         {
             G += 10;
             FixBinaryInput(ref G);
+            if(BigIntToList(G).Count - 1 > r)
+                del = new BigInteger(Math.Pow(10, (++r) + k) + 1);
         }
 
         return G;
