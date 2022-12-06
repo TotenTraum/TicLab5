@@ -113,17 +113,14 @@ public class MainWindowViewModel : INotifyPropertyChanged
         }
     }
     
-    private BigInteger _fixedCode = 0;
+    private string _fixedCode = "";
 
     public string FixedCode
     {
-        get
-        {
-            return _fixedCode.ToString();
-        }
+        get => _fixedCode;
         set
         {
-            _fixedCode = BigInteger.Parse(value);
+            _fixedCode = value;
             OnPropertyChanged();
         }
     }
@@ -147,17 +144,20 @@ public class MainWindowViewModel : INotifyPropertyChanged
         
         PolynomView =  CrcUtils.СreatePolynomialView(num);
         R = CrcUtils.CalculateCodeDistance(CrcUtils.CalculateDigitsCount(num)).ToString();
-        GPolynom = CrcUtils.CalcCreatedG(r).ToString();
+        GPolynom = CrcUtils.CalcCreatedG(r+ InfoCombin.Length,r).ToString();
         var Combination = num * (BigInteger)Math.Pow(10, CrcUtils.CalculateDigitsCount(BigInteger.Parse(_gPolynom)) - 1);
         var list = CrcUtils.BigIntToList(num);
         var module = CrcUtils.CalcModule(Combination, BigInteger.Parse(_gPolynom));
         TestPolynomCombin = CrcUtils.ListToBigInt(CrcUtils.AddLists(CrcUtils.BigIntToList(Combination), CrcUtils.BigIntToList(module))).ToString();
         TestPolynom = CrcUtils.CreatePolynomialView(CrcUtils.ListToBigInt(CrcUtils.AddLists(CrcUtils.BigIntToList(Combination), CrcUtils.BigIntToList(module))));
+        _fixedCode = TestPolynomCombin;
     }
 
     public void Start2_OnClick()
     {
-        FixedCode = CrcUtils.FixMsg(_fakeCode, BigInteger.Parse(_gPolynom)).ToString();
+        var tmp = CrcUtils.FixMsg(_fakeCode, BigInteger.Parse(_gPolynom), 1);
+        if(tmp != null)
+            FixedCode = CrcUtils.ListToString(tmp);
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

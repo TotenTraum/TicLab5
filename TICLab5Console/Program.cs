@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Text;
 
 // Поиск r
-int CalculateCodeDistance(int count) => (int)Math.Round(Math.Log2((count + 1) + Math.Round(Math.Log2(count + 1))));
+int CalculateCodeDistance(int count) => (int)Math.Ceiling(Math.Log2((count + 1) + Math.Ceiling(Math.Log2(count + 1))));
 
 // Подсчёт символов
 int CalculateDigitsCount(BigInteger value)
@@ -272,7 +272,7 @@ string ConvertToString(List<int> list)
 }
 
 var num = new List<int>{0,0,1,1}; // or new BigInteger(1100)
-num = BigIntToList(new BigInteger(1011));
+num = BigIntToList(new BigInteger(101010));
 Console.WriteLine(ConvertToString(num));
 Console.WriteLine(СreatePolynomialView(ListToBigInt(num)));
 var r = CalculateCodeDistance(CalculateDigitsCount(ListToBigInt(num)));
@@ -290,7 +290,7 @@ Console.WriteLine(module);
 Console.WriteLine(CodeCombin);
 
 Console.WriteLine(CalcModule(CodeCombin,G));
-var list2 = FixMsg(new BigInteger(1111000), G, 1);
+var list2 = FixMsg(new BigInteger(1010100110), G, 1);
 if (list2 != null)
     for(var i = list2.Count - 1; i >= 0; i--)
         Console.Write(list2[i]);

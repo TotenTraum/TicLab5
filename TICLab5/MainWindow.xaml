@@ -36,7 +36,6 @@
 
 		<TextBlock HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Text="Кодовое расстояние" VerticalAlignment="Center" Height="16" Width="224"/>
 		<TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Порождающий многочлен" VerticalAlignment="Center" Height="16" Width="224"/>
-		<CheckBox Grid.Column="3" Content="Инвертировать" HorizontalAlignment="Center" Grid.Row="0" VerticalAlignment="Center" Height="15" Width="126"/>
 		<TextBox Grid.Column="2" Text="{Binding InfoCombin }"  HorizontalAlignment="Center" Grid.Row="0" TextWrapping="Wrap" VerticalAlignment="Center" Width="346" Height="18"/>
 		<TextBlock Grid.Column="2" Text="{Binding PolynomView}" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" RenderTransformOrigin="0.279,0.625" Width="345" Height="16"/>
 		<TextBlock Grid.Column="2" Name="R" Text="{Binding R, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" RenderTransformOrigin="0.279,0.625" Width="346" Height="16"/>

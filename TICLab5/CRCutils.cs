@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Text;
 
@@ -8,7 +9,7 @@ namespace TICLab5;
 public static class CrcUtils
 {
     // Поиск r
-    public static int CalculateCodeDistance(int count) => (int)Math.Round(Math.Log2((count + 1) + Math.Round(Math.Log2(count + 1))));
+    public static int CalculateCodeDistance(int count) => (int)Math.Ceiling(Math.Log2((count + 1) + Math.Ceiling(Math.Log2(count + 1))));
 
     // Подсчёт символов
     public static int CalculateDigitsCount(BigInteger value)
@@ -112,38 +113,38 @@ public static class CrcUtils
         return first;
     }
 
-    // List<int> AddLists(List<int> first, List<int> second)
-    // {
-    //     var firstInt = ListToBigInt(first);
-    //     var secondInt = ListToBigInt(second);
-    //     
-    //     if (firstInt < secondInt)
-    //         (first, second) = (second, first);
-    //
-    //     var sizeMax = first.Count;
-    //     
-    //     for (int i = 0; i < second.Count; i++)
-    //         if (first[i] == 1 && second[i] == 1)
-    //         {
-    //             first[i] = 0;
-    //             if (i + 1 == first.Count)
-    //                 first.Add(1);
-    //             else
-    //                 first[i + 1] += 1;
-    //             var tmp = ListToBigInt(first);
-    //             FixBinaryInput(ref tmp);
-    //             first = BigIntToList(tmp);
-    //         }
-    //         else
-    //             first[i] += second[i];
-    //
-    //     while (first.Count < sizeMax)
-    //     {
-    //         first.Add(0);
-    //     }
-    //     
-    //     return first;
-    // }
+    public static List<int> AddLists(List<int> first, List<int> second)
+    {
+        var firstInt = ListToBigInt(first);
+        var secondInt = ListToBigInt(second);
+        
+        if (firstInt < secondInt)
+            (first, second) = (second, first);
+    
+        var sizeMax = first.Count;
+        
+        for (int i = 0; i < second.Count; i++)
+            if (first[i] == 1 && second[i] == 1)
+            {
+                first[i] = 0;
+                if (i + 1 == first.Count)
+                    first.Add(1);
+                else
+                    first[i + 1] += 1;
+                var tmp = ListToBigInt(first);
+                FixBinaryInput(ref tmp);
+                first = BigIntToList(tmp);
+            }
+            else
+                first[i] += second[i];
+    
+        while (first.Count < sizeMax)
+        {
+            first.Add(0);
+        }
+        
+        return first;
+    }
 
 
     // xor над двумя код. комбинациями
@@ -275,30 +276,30 @@ public static class CrcUtils
             str += list[i];
         return str;
     }
-    // public static string CreatePolynomialView(BigInteger val)
-    // {
-    //     StringBuilder builder = new();
-    //     var list = BigIntToList(val);
-    //     for (int i = list.Count - 1; i >= 0; i--)
-    //     {
-    //         if (i == list.Count - 1)
-    //         {
-    //             builder.Append($"x^({i})");
-    //         }
-    //         else if (i == 0 && list[i] == 1)
-    //         {
-    //             builder.Append(" + ");
-    //             builder.Append(list[i].ToString());
-    //         }
-    //         else if (list[i] == 1)
-    //         {
-    //             builder.Append(" + ");
-    //             builder.Append($"x^({i})");
-    //         }
-    //     }
-    //
-    //     return builder.ToString();
-    // }
+    public static string CreatePolynomialView(BigInteger val)
+    {
+        StringBuilder builder = new();
+        var list = BigIntToList(val);
+        for (int i = list.Count - 1; i >= 0; i--)
+        {
+            if (i == list.Count - 1)
+            {
+                builder.Append($"x^({i})");
+            }
+            else if (i == 0 && list[i] == 1)
+            {
+                builder.Append(" + ");
+                builder.Append(list[i].ToString());
+            }
+            else if (list[i] == 1)
+            {
+                builder.Append(" + ");
+                builder.Append($"x^({i})");
+            }
+        }
+    
+        return builder.ToString();
+    }
 
     public static BigInteger ReverseBigInt(BigInteger val)
     {
@@ -319,5 +320,13 @@ public static class CrcUtils
         }
 
         return true;
+    }
+
+    public static string ListToString(List<int> list)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (var i = list.Count - 1; i >= 0; i--) 
+            builder.Append(list[i]);
+        return builder.ToString();
     }
 }
