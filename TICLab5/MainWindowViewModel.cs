@@ -7,6 +7,8 @@ namespace TICLab5;
 
 public sealed class MainWindowViewModel : INotifyPropertyChanged
 {
+    #region properties
+    
     /// <summary>
     /// Кодовая комбинация
     /// </summary>
@@ -88,6 +90,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
         get => _fixedCode;
         private set => SetField(ref _fixedCode, value);
     }
+
+    #endregion
 
     #region command
     /// <summary>
