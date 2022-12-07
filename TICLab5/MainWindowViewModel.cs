@@ -100,8 +100,8 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     public ActionCommand Start1Command => new((_) =>
     {
         // Парсим кодовую комбинацию 
-        var num = CrcUtils.parseString(InfoCombin);
-        PolynomView = CrcUtils.СreatePolynomialView(CrcUtils.ListToBigInt(num));
+        var num = CrcUtils.ParseString(InfoCombin);
+        PolynomView = CrcUtils.CreatePolynomialView(CrcUtils.ListToBigInt(num));
         // Вычисление корректирующих разрядов
         R = CrcUtils.CalculateCodeDistance(num.Count).ToString();
         var n = _r + InfoCombin.Length;
@@ -127,7 +127,7 @@ public sealed class MainWindowViewModel : INotifyPropertyChanged
     /// </summary>
     public ActionCommand Start2Command => new((_) =>
     {
-        var tmp = CrcUtils.FixMsg(CrcUtils.parseString(_fakeCode), BigInteger.Parse(_gPolynomCombin), 1);
+        var tmp = CrcUtils.FixMsg(CrcUtils.ParseString(_fakeCode), BigInteger.Parse(_gPolynomCombin), 1);
         if(tmp != null)
             FixedCode = CrcUtils.ListToString(tmp);
     });

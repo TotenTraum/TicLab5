@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 using System.Text;
 
@@ -11,21 +10,8 @@ public static class CrcUtils
     // Поиск r
     public static int CalculateCodeDistance(int count) => (int)Math.Ceiling(Math.Log2((count + 1) + Math.Ceiling(Math.Log2(count + 1))));
 
-    // Подсчёт символов
-    public static int CalculateDigitsCount(BigInteger value)
-    {
-        var tmp = value;
-        var r = 0;
-        while (tmp > 0)
-        {
-            tmp /= 10;
-            r++;
-        }
-        return r;
-    }
-
 // Поиск единиц в числе
-    public static int CountOne(BigInteger value)
+private static int CountOne(BigInteger value)
     {
         var tmp = value;
         var r = 0;
@@ -39,7 +25,7 @@ public static class CrcUtils
     }
     
     // Находит числа больше 1 и переводит их в след разряд
-    public static void FixBinaryInput(ref BigInteger value)
+    private static void FixBinaryInput(ref BigInteger value)
     {
         var digits = BigIntToList(value);
         for (int i = 0; i < digits.Count; i++)
@@ -76,7 +62,7 @@ public static class CrcUtils
     }
 
     // Вычленяет countDigits символов
-    public static BigInteger ListToBigIntCount(ref List<int> digits, int countDigits)
+    private static BigInteger ListToBigIntCount(ref List<int> digits, int countDigits)
     {
         var newValue = new BigInteger(0);
         int i = digits.Count - 1, count = 0;
@@ -89,7 +75,7 @@ public static class CrcUtils
     }
 
     // Очистка лишних нулей
-    public static List<int> TrimList(List<int> value)
+    private static List<int> TrimList(List<int> value)
     {
         int index = value.Count - 1;
         for (; index > 0 && value[index] == 0; index--)
@@ -98,7 +84,7 @@ public static class CrcUtils
     }
 
     // Деление код. комбинации на код. комбинацию
-    public static List<int> DivLists(List<int> first, List<int> second)
+    private static List<int> DivLists(List<int> first, List<int> second)
     {
         first = TrimList(first);
         second = TrimList(second);
@@ -148,7 +134,7 @@ public static class CrcUtils
 
 
     // xor над двумя код. комбинациями
-    public static List<int> XorLists(List<int> first, List<int> second)
+    private static List<int> XorLists(List<int> first, List<int> second)
     {
         var firstInt = ListToBigInt(first);
         var secondInt = ListToBigInt(second);
@@ -171,10 +157,10 @@ public static class CrcUtils
     }
 
     //Вычисление модуля
-    public static BigInteger CalcModule(BigInteger combin, BigInteger G)
+    public static BigInteger CalcModule(BigInteger combin, BigInteger g)
     {
         var combinList = BigIntToList(combin);
-        var gList = BigIntToList(G);
+        var gList = BigIntToList(g);
         while (combinList.Count >= gList.Count)
         {
             var bigInt = ListToBigIntCount(ref combinList, gList.Count);
@@ -188,22 +174,22 @@ public static class CrcUtils
     //Генерация образующего многочлена
     public static BigInteger CalcCreatedG(int n, int r)
     {
-        var G = new BigInteger(Math.Pow(10, r) + 1);
+        var g = new BigInteger(Math.Pow(10, r) + 1);
         var del = new BigInteger(Math.Pow(10, n) + 1);
         var k = n - r;
-        while (CountOne(G) < 3 || CalcModule(del, G) != 0)
+        while (CountOne(g) < 3 || CalcModule(del, g) != 0)
         {
-            G += 10;
-            FixBinaryInput(ref G);
-            if(BigIntToList(G).Count - 1 > r)
+            g += 10;
+            FixBinaryInput(ref g);
+            if(BigIntToList(g).Count - 1 > r)
                 del = new BigInteger(Math.Pow(10, (++r) + k) + 1);
         }
 
-        return G;
+        return g;
     }
 
     //Сдвиг влево
-    public static List<int> ShiftLeft(List<int> val)
+    private static List<int> ShiftLeft(List<int> val)
     {
         val.Insert(0,val[^1]);
         val.RemoveAt(val.Count - 1);
@@ -211,7 +197,7 @@ public static class CrcUtils
     }
 
     //Сдвиг вправо
-    public static List<int> ShiftRight(List<int> val)
+    private static List<int> ShiftRight(List<int> val)
     {
         val.Insert(val.Count,val[0]);
         val.RemoveAt(0);
@@ -219,11 +205,11 @@ public static class CrcUtils
     }
 
     // Исправляет ошибки
-    public static List<int>? FixMsg(List<int> val, BigInteger G, int correctAbility)
+    public static List<int>? FixMsg(List<int> val, BigInteger g, int correctAbility)
     {
         int count = 0;
         var list = new List<int>(val);
-        var result = CalcModule( ListToBigInt(val),G); // Вычисляем модуль
+        var result = CalcModule( ListToBigInt(val),g); // Вычисляем модуль
         if (CountOne(result) == 0) // Если ошибок нет
             return list;
 
@@ -231,7 +217,7 @@ public static class CrcUtils
         // или количество сдвигов меньше количества символов в коде
         while (count < list.Count && CountOne(result) > correctAbility)
         {
-            result = CalcModule(ListToBigInt(list),G);
+            result = CalcModule(ListToBigInt(list),g);
             if (CountOne(result) <= 1) continue;
             list = ShiftLeft(list);
             count++;
@@ -248,7 +234,7 @@ public static class CrcUtils
     }
 
     // Генерация красивого вывода
-    public static string СreatePolynomialView(BigInteger val) 
+    public static string CreatePolynomialView(BigInteger val) 
     {
         StringBuilder builder = new();
         var list = BigIntToList(val);
@@ -262,69 +248,6 @@ public static class CrcUtils
         return builder.ToString();
     }
 
-    // Разворачивает вход. комбинацию
-    // BigInteger reverseBigInt(BigInteger val)
-    // {
-    //     var digits = BigIntToList(val);
-    //     var newValue = new BigInteger(0);
-    //     for (int i = 0; i < digits.Count; i++)
-    //         newValue = newValue * 10 + digits[i];
-    //     return newValue;
-    // }
-
-    public static string ConvertToString(List<int> list)
-    {
-        string str = "";
-        for(int i = list.Count - 1; i >= 0; i--)
-            str += list[i];
-        return str;
-    }
-    public static string CreatePolynomialView(BigInteger val)
-    {
-        StringBuilder builder = new();
-        var list = BigIntToList(val);
-        for (int i = list.Count - 1; i >= 0; i--)
-        {
-            if (i == list.Count - 1)
-            {
-                builder.Append($"x^({i})");
-            }
-            else if (i == 0 && list[i] == 1)
-            {
-                builder.Append(" + ");
-                builder.Append(list[i].ToString());
-            }
-            else if (list[i] == 1)
-            {
-                builder.Append(" + ");
-                builder.Append($"x^({i})");
-            }
-        }
-    
-        return builder.ToString();
-    }
-
-    public static BigInteger ReverseBigInt(BigInteger val)
-    {
-        var digits = BigIntToList(val);
-        var newValue = new BigInteger(0);
-        for (int i = 0; i < digits.Count; i++)
-            newValue = newValue * 10 + digits[i];
-        return newValue;
-    }
-
-    public static bool IsBinary(BigInteger val)
-    {
-        var list = BigIntToList(val);
-        foreach (var item in list)
-        {
-            if (item != 0 && item != 1)
-                return false;
-        }
-
-        return true;
-    }
-
     public static string ListToString(List<int> list)
     {
         StringBuilder builder = new StringBuilder();
@@ -333,7 +256,7 @@ public static class CrcUtils
         return builder.ToString();
     }
 
-    public static List<int> parseString(string str)
+    public static List<int> ParseString(string str)
     {
         var rtn = new List<int>();
         foreach (var ch in str)
