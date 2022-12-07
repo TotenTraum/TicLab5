@@ -35,17 +35,17 @@
 		<Button Content="Запуск" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Height="20" Width="41"/>
 
 		<TextBlock HorizontalAlignment="Center" Grid.Row="2" TextWrapping="Wrap" Text="Кодовое расстояние" VerticalAlignment="Center" Height="16" Width="224"/>
-		<TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Порождающий многочлен" VerticalAlignment="Center" Height="16" Width="224"/>
+		<TextBlock HorizontalAlignment="Center" Grid.Row="3" TextWrapping="Wrap" Text="Образующий многочлен" VerticalAlignment="Center" Height="16" Width="224"/>
 		<TextBox Grid.Column="2" Text="{Binding InfoCombin }"  HorizontalAlignment="Center" Grid.Row="0" TextWrapping="Wrap" VerticalAlignment="Center" Width="346" Height="18"/>
 		<TextBlock Grid.Column="2" Text="{Binding PolynomView}" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" RenderTransformOrigin="0.279,0.625" Width="345" Height="16"/>
 		<TextBlock Grid.Column="2" Name="R" Text="{Binding R, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" RenderTransformOrigin="0.279,0.625" Width="346" Height="16"/>
-		<TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding GPolynom, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" VerticalAlignment="Center" RenderTransformOrigin="0.279,0.625" Width="344" Height="16"/>
-		<TextBlock HorizontalAlignment="Center" Grid.Row="4" Text="Проверочный многочлен" VerticalAlignment="Center" Height="16" Width="224"/>
-		<TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding TestPolynom, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" VerticalAlignment="Center" RenderTransformOrigin="0.279,0.625" Width="344" Height="16"/>
-		<Button Name="Start1" Content="Запуск" Command="{Binding start1Command}" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Height="20" Width="41"/>
-		<Button Content="Запуск"  Command="{Binding start2Command}" HorizontalAlignment="Center" Grid.Row="9" VerticalAlignment="Center" Height="20" Width="41"/>
-		<TextBlock HorizontalAlignment="Center" Grid.Row="5" Text="Конечный результат" VerticalAlignment="Center" Height="16" Width="224"/>
-		<TextBox Grid.Column="2" HorizontalAlignment="Center" Text="{Binding TestPolynomCombin, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Center" Width="348" Height="18"/>
+		<TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding GPolynomCombin, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" VerticalAlignment="Center" RenderTransformOrigin="0.279,0.625" Width="344" Height="16"/>
+		<TextBlock HorizontalAlignment="Center" Grid.Row="4" Text="Полиномиальный цикл. код" VerticalAlignment="Center" Height="16" Width="224"/>
+		<TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding ResultPolynomView, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" VerticalAlignment="Center" RenderTransformOrigin="0.279,0.625" Width="344" Height="16"/>
+		<Button Name="Start1" Content="Запуск" Command="{Binding Start1Command}" HorizontalAlignment="Center" Grid.Row="6" VerticalAlignment="Center" Height="20" Width="41"/>
+		<Button Content="Запуск"  Command="{Binding Start2Command}" HorizontalAlignment="Center" Grid.Row="9" VerticalAlignment="Center" Height="20" Width="41"/>
+		<TextBlock HorizontalAlignment="Center" Grid.Row="5" Text="Цикл. код" VerticalAlignment="Center" Height="16" Width="224"/>
+		<TextBox Grid.Column="2" HorizontalAlignment="Center" Text="{Binding ResultPolynomCombin, UpdateSourceTrigger=PropertyChanged}" Grid.Row="5" TextWrapping="Wrap" VerticalAlignment="Center" Width="348" Height="18"/>
 		<TextBlock HorizontalAlignment="Center" Grid.Row="7" Text="Кодовая комбинация" VerticalAlignment="Center" Height="16" Width="224"/>
 		<TextBlock HorizontalAlignment="Center" Grid.Row="8" Text="Исправленная комбинация" VerticalAlignment="Center" Height="16" Width="224"/>
 		<CheckBox Visibility="Hidden" Grid.Column="3" Content="Инвертировать" HorizontalAlignment="Center" Grid.Row="7" VerticalAlignment="Center" Height="15" Width="126"/>

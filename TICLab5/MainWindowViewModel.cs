@@ -1,187 +1,162 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using System.Windows;
-using System.Windows.Input;
 
 namespace TICLab5;
 
-public class MainWindowViewModel : INotifyPropertyChanged
+public sealed class MainWindowViewModel : INotifyPropertyChanged
 {
-    public class ActionCommand : ICommand
+    /// <summary>
+    /// Кодовая комбинация
+    /// </summary>
+    public string InfoCombin
     {
-        private Action<object>? _action;
-
-        public ActionCommand(Action<object> exec)
-        {
-            _action = exec;
-        }
-
-        public bool CanExecute(object? parameter)
-        {
-            return _action != null;
-        }
-
-        public void Execute(object? parameter)
-        {
-            if(_action != null)
-                _action(parameter?? "Null");
-        }
-
-        public event EventHandler? CanExecuteChanged;
+        get => _infoCombin;
+        set => _infoCombin = value;
     }
-    public string InfoCombin { get; set; }
 
-    private string _polynomView = "";
+    /// <summary>
+    /// Кодовая комбинация в виде полинома
+    /// </summary>
     public string PolynomView
     {
-        get { return _polynomView; }
-        set { _polynomView = value; OnPropertyChanged(); }
+        get => _polynomView;
+        private set => SetField(ref _polynomView, value);
     }
-    public int r { get; set; }
 
+    /// <summary>
+    /// Количество корректирующих разрядов
+    /// </summary>
     public string R
     {
-        get
-        {
-            if (r != 0)
-                return r.ToString();
-            return "";
-        }
-        set
-        {
-            r = int.Parse(value);
-            OnPropertyChanged();
-        }
+        get => _r != 0 ? _r.ToString() : "";
+        private set => SetField(ref _r, int.Parse(value));
     }
 
-    public string GPolynom
+    /// <summary>
+    /// Образующий многочлен
+    /// </summary>
+    public string GPolynomCombin
     {
-        get
-        {
-            if (!string.IsNullOrEmpty(_gPolynom))
-                return CrcUtils.CreatePolynomialView(BigInteger.Parse(_gPolynom)) + " | " + _gPolynom;
-            else
-                return _gPolynom;
-        }
-        set { _gPolynom = value; OnPropertyChanged(); }
-    }
-    private string _gPolynom { get; set; }
-    private string _testPolynom { get; set; }
-
-    private bool _invert = false;
-    public bool Invert
-    {
-        get { return _invert; }
-        set { _invert = value; OnPropertyChanged(); }
-    }
-
-
-    public string TestPolynom
-    {
-        get { return _testPolynom;}
-        set { _testPolynom = value; OnPropertyChanged(); }
-    }
-
-    public string TestPolynomCombin
-    {
-        get { return _testPolynomCombin;}
-        set
-        {
-            _testPolynomCombin = value;
-            OnPropertyChanged();
-        }
-    }
-    private string _testPolynomCombin { get; set; }
-    public ActionCommand start1Command { get; set; }
-    public ActionCommand start2Command { get; set; }
-
-    private string _fakeCode;
-
-    public string FakeCode
-    {
-        get
-        {
-            return _fakeCode;
-        }
-        set
-        {
-            _fakeCode = value;
-            OnPropertyChanged();
-        }
+        get => _gPolynomCombin;
+        private set => SetField(ref _gPolynomCombin, value);
     }
     
-    private string _fixedCode = "";
+    /// <summary>
+    /// Образующий многочлен в виде полинома
+    /// </summary>
+    public string GPolynomView
+    {
+        get => _gPolynomView;
+        private set => SetField(ref _gPolynomView,
+            CrcUtils.CreatePolynomialView(BigInteger.Parse(value)));
+    }
 
+    /// <summary>
+    /// Результат кодирования
+    /// </summary>
+    public string ResultPolynomCombin
+    {
+        get => _resultPolynomCombin;
+        set => SetField(ref _resultPolynomCombin, value);
+    }
+    
+    /// <summary>
+    /// Результат кодирования в виде полинома
+    /// </summary>
+    public string ResultPolynomView
+    {
+        get => _resultPolynomView;
+        private set => SetField(ref _resultPolynomView, CrcUtils.CreatePolynomialView(BigInteger.Parse(value)));
+    }
+    
+    /// <summary>
+    /// Сломанная кодовая комбинация
+    /// </summary>
+    public string FakeCode
+    {
+        get => _fakeCode;
+        set => SetField(ref _fakeCode, value);
+    }
+    
+    /// <summary>
+    /// Исправленная кодовая комбинация
+    /// </summary>
     public string FixedCode
     {
         get => _fixedCode;
-        set
-        {
-            _fixedCode = value;
-            OnPropertyChanged();
-        }
+        private set => SetField(ref _fixedCode, value);
     }
 
-    public MainWindowViewModel()
+    #region command
+    /// <summary>
+    /// Этап кодирования
+    /// </summary>
+    public ActionCommand Start1Command => new((_) =>
     {
-        InfoCombin = "";
-        PolynomView = "";
-        r = 0;
-        GPolynom = "";
-        
-        start1Command = new ActionCommand(x => Start1_OnClick());
-        start2Command = new ActionCommand(x => Start2_OnClick());
-    }
-
-    public void Start1_OnClick()
-    {
-        List<int> num;
-        try
-        {
-            num = CrcUtils.parseString(InfoCombin);
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-        
-        PolynomView =  CrcUtils.СreatePolynomialView(CrcUtils.ListToBigInt(num));
+        // Парсим кодовую комбинацию 
+        var num = CrcUtils.parseString(InfoCombin);
+        PolynomView = CrcUtils.СreatePolynomialView(CrcUtils.ListToBigInt(num));
+        // Вычисление корректирующих разрядов
         R = CrcUtils.CalculateCodeDistance(num.Count).ToString();
-        GPolynom = CrcUtils.CalcCreatedG(r+ InfoCombin.Length,r).ToString();
+        var n = _r + InfoCombin.Length;
+        // Вычисление образующего многочлена
+        GPolynomCombin = CrcUtils.CalcCreatedG(n, _r).ToString();
+        // Приведение к виду полинома
+        GPolynomView = GPolynomCombin;
+        // Создаем комбинацию num * 10^(r-1) 
         var cmb = new List<int>(num);
-        for(int i = 0; i < _gPolynom.Length - 1; i++)
-            cmb.Insert(0,0);
-        var Combination = CrcUtils.ListToString(cmb);
-        //var list = CrcUtils.BigIntToList(num);
-        var module = CrcUtils.CalcModule(CrcUtils.ListToBigInt(cmb), BigInteger.Parse(_gPolynom));
-        TestPolynomCombin = CrcUtils.ListToString(CrcUtils.AddLists(cmb, CrcUtils.BigIntToList(module)));
-        TestPolynom = CrcUtils.CreatePolynomialView(CrcUtils.ListToBigInt(CrcUtils.AddLists(cmb, CrcUtils.BigIntToList(module))));
-        FakeCode = TestPolynomCombin;
-    }
-
-    public void Start2_OnClick()
+        for (int i = 0; i < _gPolynomCombin.Length - 1; i++)
+            cmb.Insert(0, 0);
+        // Вычисляем остаток деления комбинации num * 10^(r-1) на образующий многочлен 
+        var module = CrcUtils.CalcModule(CrcUtils.ListToBigInt(cmb), BigInteger.Parse(_gPolynomCombin));
+        // Суммируем остаток с комбинацией num * 10^(r-1)
+        ResultPolynomCombin = CrcUtils.ListToString(CrcUtils.AddLists(cmb, CrcUtils.BigIntToList(module)));
+        // Приведение к виду полинома
+        ResultPolynomView = ResultPolynomCombin;
+        FakeCode = ResultPolynomCombin;
+    });
+    
+    /// <summary>
+    /// Этап декодирования
+    /// </summary>
+    public ActionCommand Start2Command => new((_) =>
     {
-        var tmp = CrcUtils.FixMsg(CrcUtils.parseString(_fakeCode), BigInteger.Parse(_gPolynom), 1);
+        var tmp = CrcUtils.FixMsg(CrcUtils.parseString(_fakeCode), BigInteger.Parse(_gPolynomCombin), 1);
         if(tmp != null)
             FixedCode = CrcUtils.ListToString(tmp);
-    }
+    });
 
+    #endregion
+    
+    #region private
+
+    private string _infoCombin = "";
+    private int _r;
+    private string _gPolynomCombin = "";
+    private string _gPolynomView = "";
+    private string _resultPolynomCombin = "";
+    private string _resultPolynomView = "";
+    private string _polynomView = "";
+    private string _fakeCode = "";
+    private string _fixedCode = "";
+    
+    #endregion
+    
+    #region MVVM_part
     public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+    private void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
+    private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {
-        if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+        if (EqualityComparer<T>.Default.Equals(field, value)) return;
         field = value;
         OnPropertyChanged(propertyName);
-        return true;
     }
+    #endregion
 }
