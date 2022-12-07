@@ -167,7 +167,7 @@ List<int> XorLists(List<int> first, List<int> second)
 //Вычисление модуля
 BigInteger CalcModule(BigInteger combin, BigInteger G)
 {
-    var combinList = BigIntToList(combin);
+    var combinList = TrimList(BigIntToList(combin));
     var gList = BigIntToList(G);
     //Console.WriteLine("\n");
     while (combinList.Count >= gList.Count)
@@ -218,13 +218,13 @@ List<int> ShiftRight(List<int> val)
 }
 
 // Исправляет ошибки
-List<int>? FixMsg(BigInteger val, BigInteger G, int correctAbility)
+List<int>? FixMsg(List<int> val, BigInteger G, int correctAbility)
 {
     int count = 0;
-    var list = BigIntToList(val);
-    var result = CalcModule(val,G); // Вычисляем модуль
+    var list = new List<int>(val);
+    var result = CalcModule( ListToBigInt(val),G); // Вычисляем модуль
     if (CountOne(result) == 0) // Если ошибок нет
-        return BigIntToList(val);
+        return list;
 
     // Вычисление модуля деления и сдвиг до тех пор, пока кол-во 1 будет больше correctAbility
     // или количество сдвигов меньше количества символов в коде
@@ -279,8 +279,8 @@ string ConvertToString(List<int> list)
     return str;
 }
 
-var num = new List<int>{0,0,1,1}; // or new BigInteger(1100)
-num = BigIntToList(new BigInteger(101101111));
+var num = new List<int>{0,0,1,0}; // or new BigInteger(1100)
+//num = BigIntToList(new BigInteger(101101111));
 Console.WriteLine(ConvertToString(num));
 Console.WriteLine(СreatePolynomialView(ListToBigInt(num)));
 var r = CalculateCodeDistance(CalculateDigitsCount(ListToBigInt(num)));
@@ -292,15 +292,15 @@ for(int i = 0; i < CalculateDigitsCount(G) - 1; i++)
     Combination.Insert(0,0);
 var list = num;
 var module = CalcModule(ListToBigInt(Combination) , G);
-var CodeCombin = ListToBigInt(XorLists(Combination, BigIntToList(module)));
+var CodeCombin = XorLists(Combination, BigIntToList(module));
 Console.WriteLine(G);
 Console.WriteLine(ConvertToString(Combination));
 Console.WriteLine(module);
-Console.WriteLine(CodeCombin);
+Console.WriteLine(ConvertToString(CodeCombin));
 
-// Console.WriteLine(CalcModule(CodeCombin,G));
-// var list2 = FixMsg(new BigInteger(1010100110), G, 1);
-// if (list2 != null)
-//     for(var i = list2.Count - 1; i >= 0; i--)
-//         Console.Write(list2[i]);
-// Console.WriteLine();
+Console.WriteLine(CalcModule(ListToBigInt(CodeCombin),G));
+var list2 = FixMsg(new List<int>{1,1,1,0, 1, 1, 0}, G, 1);
+if (list2 != null)
+    for(var i = list2.Count - 1; i >= 0; i--)
+        Console.Write(list2[i]);
+Console.WriteLine();

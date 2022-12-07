@@ -219,13 +219,13 @@ public static class CrcUtils
     }
 
     // Исправляет ошибки
-    public static List<int>? FixMsg(BigInteger val, BigInteger G, int correctAbility)
+    public static List<int>? FixMsg(List<int> val, BigInteger G, int correctAbility)
     {
         int count = 0;
-        var list = BigIntToList(val);
-        var result = CalcModule(val,G); // Вычисляем модуль
+        var list = new List<int>(val);
+        var result = CalcModule( ListToBigInt(val),G); // Вычисляем модуль
         if (CountOne(result) == 0) // Если ошибок нет
-            return BigIntToList(val);
+            return list;
 
         // Вычисление модуля деления и сдвиг до тех пор, пока кол-во 1 будет больше correctAbility
         // или количество сдвигов меньше количества символов в коде
@@ -236,7 +236,7 @@ public static class CrcUtils
             list = ShiftLeft(list);
             count++;
         }
-        
+    
         if (count  == list.Count) // Если мы обошли всё число
             return null;
 
@@ -331,5 +331,19 @@ public static class CrcUtils
         for (var i = list.Count - 1; i >= 0; i--) 
             builder.Append(list[i]);
         return builder.ToString();
+    }
+
+    public static List<int> parseString(string str)
+    {
+        var rtn = new List<int>();
+        foreach (var ch in str)
+        {
+            if (ch == '0' || ch == '1')
+                rtn.Insert(0, int.Parse(ch.ToString()));
+            else
+                throw new Exception("cannot parse str");
+        }
+
+        return rtn;
     }
 }

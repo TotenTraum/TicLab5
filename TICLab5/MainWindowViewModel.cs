@@ -98,17 +98,17 @@ public class MainWindowViewModel : INotifyPropertyChanged
     public ActionCommand start1Command { get; set; }
     public ActionCommand start2Command { get; set; }
 
-    private BigInteger _fakeCode = 0;
+    private string _fakeCode;
 
     public string FakeCode
     {
         get
         {
-            return _fakeCode.ToString();
+            return _fakeCode;
         }
         set
         {
-            _fakeCode = BigInteger.Parse(value);
+            _fakeCode = value;
             OnPropertyChanged();
         }
     }
@@ -138,24 +138,34 @@ public class MainWindowViewModel : INotifyPropertyChanged
 
     public void Start1_OnClick()
     {
-        var num = BigInteger.Parse(InfoCombin);
-        if(! CrcUtils.IsBinary(num))
-            return;
+        List<int> num;
+        try
+        {
+            num = CrcUtils.parseString(InfoCombin);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
         
-        PolynomView =  CrcUtils.СreatePolynomialView(num);
-        R = CrcUtils.CalculateCodeDistance(CrcUtils.CalculateDigitsCount(num)).ToString();
+        PolynomView =  CrcUtils.СreatePolynomialView(CrcUtils.ListToBigInt(num));
+        R = CrcUtils.CalculateCodeDistance(num.Count).ToString();
         GPolynom = CrcUtils.CalcCreatedG(r+ InfoCombin.Length,r).ToString();
-        var Combination = num * (BigInteger)Math.Pow(10, CrcUtils.CalculateDigitsCount(BigInteger.Parse(_gPolynom)) - 1);
-        var list = CrcUtils.BigIntToList(num);
-        var module = CrcUtils.CalcModule(Combination, BigInteger.Parse(_gPolynom));
-        TestPolynomCombin = CrcUtils.ListToBigInt(CrcUtils.AddLists(CrcUtils.BigIntToList(Combination), CrcUtils.BigIntToList(module))).ToString();
-        TestPolynom = CrcUtils.CreatePolynomialView(CrcUtils.ListToBigInt(CrcUtils.AddLists(CrcUtils.BigIntToList(Combination), CrcUtils.BigIntToList(module))));
+        var cmb = new List<int>(num);
+        for(int i = 0; i < _gPolynom.Length - 1; i++)
+            cmb.Insert(0,0);
+        var Combination = CrcUtils.ListToString(cmb);
+        //var list = CrcUtils.BigIntToList(num);
+        var module = CrcUtils.CalcModule(CrcUtils.ListToBigInt(cmb), BigInteger.Parse(_gPolynom));
+        TestPolynomCombin = CrcUtils.ListToString(CrcUtils.AddLists(cmb, CrcUtils.BigIntToList(module)));
+        TestPolynom = CrcUtils.CreatePolynomialView(CrcUtils.ListToBigInt(CrcUtils.AddLists(cmb, CrcUtils.BigIntToList(module))));
         FakeCode = TestPolynomCombin;
     }
 
     public void Start2_OnClick()
     {
-        var tmp = CrcUtils.FixMsg(_fakeCode, BigInteger.Parse(_gPolynom), 1);
+        var tmp = CrcUtils.FixMsg(CrcUtils.parseString(_fakeCode), BigInteger.Parse(_gPolynom), 1);
         if(tmp != null)
             FixedCode = CrcUtils.ListToString(tmp);
     }
